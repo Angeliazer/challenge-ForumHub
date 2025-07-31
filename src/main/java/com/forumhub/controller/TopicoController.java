@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.format.DateTimeFormatter;
+
 @RestController
 @RequestMapping("/topicos")
 public class TopicoController {
@@ -52,17 +54,25 @@ public class TopicoController {
 
         topicoRepository.save(topico);
         var uri = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
-        return ResponseEntity.created(uri).body(new DtoTopicoResponse(topico.getId(), topico.getTitulo(),
-                topico.getMensagem(), topico.getDataCriacao()));
-    }
-
-    @GetMapping
-    public ResponseEntity<Page<DtoListagemTopico>> listar(@PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
-        var page = topicoRepository.findAllByOrderByDataCriacaoAsc(paginacao)
-                .map(topico -> new DtoListagemTopico(
+        return ResponseEntity.created(uri).body(
+                new DtoTopicoResponse(
                         topico.getId(),
                         topico.getTitulo(),
                         topico.getMensagem(),
+                        topico.getDataCriacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                )
+        );
+
+    }
+
+    @GetMapping
+    public ResponseEntity<Page<DtoDetalheTopico>> listar(@PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
+        var page = topicoRepository.findAllByOrderByDataCriacaoAsc(paginacao)
+                .map(topico -> new DtoDetalheTopico(
+                        topico.getId(),
+                        topico.getTitulo(),
+                        topico.getMensagem(),
+                        topico.getDataCriacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                         topico.getStatus().name(),
                         topico.getAutor().getNome(),
                         topico.getCurso().getNome()
@@ -88,8 +98,12 @@ public class TopicoController {
         }
 
         return ResponseEntity.ok(new DtoDetalheTopico(topico.getId(),
-                topico.getTitulo(), topico.getMensagem(), topico.getStatus().name(),
-                topico.getAutor().getNome(), topico.getCurso().getNome()));
+                topico.getTitulo(),
+                topico.getMensagem(),
+                topico.getDataCriacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                topico.getStatus().name(),
+                topico.getAutor().getNome(),
+                topico.getCurso().getNome()));
     }
 
     @DeleteMapping("/{id}")
@@ -113,9 +127,14 @@ public class TopicoController {
 
         var topico = validacoesTopico.validarIdTopico(id);
 
-        return ResponseEntity.ok(new DtoDetalheTopico(topico.getId(),
-                topico.getTitulo(), topico.getMensagem(), topico.getStatus().name(),
-                topico.getAutor().getNome(), topico.getCurso().getNome()));
+        return ResponseEntity.ok(new DtoDetalheTopico(
+                topico.getId(),
+                topico.getTitulo(),
+                topico.getMensagem(),
+                topico.getDataCriacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                topico.getStatus().name(),
+                topico.getAutor().getNome(),
+                topico.getCurso().getNome()));
     }
 
 }
