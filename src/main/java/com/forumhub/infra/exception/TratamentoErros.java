@@ -1,4 +1,4 @@
-package com.forumhub.infra;
+package com.forumhub.infra.exception;
 
 import com.forumhub.validacoes.ValidacaoException;
 import jakarta.persistence.EntityNotFoundException;
