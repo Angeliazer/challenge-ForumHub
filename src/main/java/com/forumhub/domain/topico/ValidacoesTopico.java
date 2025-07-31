@@ -1,6 +1,5 @@
 package com.forumhub.domain.topico;
 
-import com.forumhub.domain.curso.Curso;
 import com.forumhub.validacoes.ValidacaoException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
