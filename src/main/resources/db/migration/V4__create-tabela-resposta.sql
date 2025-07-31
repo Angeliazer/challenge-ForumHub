@@ -1,13 +1,13 @@
-create table respostas (
+create table resposta (
     id bigint not null auto_increment,
     mensagem varchar(255) not null,
-    topico_id bigint not null,
-    dataCriacao datetime not null,
+    data_criacao datetime not null DEFAULT CURRENT_TIMESTAMP,
     status varchar(50) not null,
-    usuario_id bigint not null,
+    topico_id bigint not null,
+    autor_id bigint not null,
     solucao varchar(255) not null,
 
     primary key(id),
-    constraint fk_respostas_topico_id foreign key(topico_id) references respostas(id),
-    constraint fk_respostas_usuario_id foreign key(usuario_id) references usuarios(id)
+    constraint fk_resposta_topico foreign key(topico_id) references resposta(id),
+    constraint fk_resposta_usuario foreign key(autor_id) references usuario(id)
 );

@@ -1,6 +1,7 @@
 package com.forumhub.domain.usuario;
 
-import com.forumhub.domain.perfil.Perfil;
+import jakarta.persistence.Column;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,19 +11,20 @@ public record DadosCadastroUsuario(
 
         @NotNull
         @Email
+        @Column(unique = true)
         String email,
 
         @NotNull
         String senha,
 
         @NotNull
-        Long perfil
+        Long idPerfil
 ) {
 
-    public DadosCadastroUsuario(String nome, String email, String senha,  Long perfil) {
+    public DadosCadastroUsuario(@Valid String nome, String email, String senha, Long idPerfil) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
-        this.perfil = perfil;
+        this.idPerfil = idPerfil;
     }
 }

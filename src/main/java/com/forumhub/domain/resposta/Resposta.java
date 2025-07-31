@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Table(name = "respostas")
+@Table(name = "resposta")
 @Entity(name = "Resposta")
 public class Resposta {
 
@@ -28,12 +28,16 @@ public class Resposta {
     @JoinColumn(name = "topico_id")
     private Topico topico;
 
-    private LocalDateTime dataCriacao;
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id")
     private Usuario autor;
 
     private String solucao;
+
+    public Resposta(Long id){
+        this.id = id;
+    }
 
 }

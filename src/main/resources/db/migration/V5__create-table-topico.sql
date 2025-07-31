@@ -1,15 +1,12 @@
-create table topicos (
+create table topico (
     id bigint not null auto_increment,
-    titulo varchar(100) not null,
-    mensagem varchar(255) not null,
-    dataCriacao datetime not null,
-    status varchar(50) not null,
-    usuario_id bigint not null,
+    titulo varchar(255) not null,
+    mensagem TEXT not null,
+    data_criacao datetime not null DEFAULT CURRENT_TIMESTAMP,
+    status varchar(20) not null DEFAULT 'NAO_RESPONDIDO',
+    autor_id bigint not null,
     curso_id bigint not null,
-    resposta_id bigint not null,
-
     primary key(id),
-    constraint fk_topicos_usuario_id foreign key(usuario_id) references usuarios(id),
-    constraint fk_topicos_curso_id foreign key(curso_id) references cursos(id),
-    constraint fk_topicos_resposta_id foreign key(resposta_id) references respostas(id)
+    constraint fk_topico_autor foreign key(autor_id) references usuario(id),
+    constraint fk_topico_curso foreign key(curso_id) references curso(id)
 );

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@Table(name = "perfis")
+@Table(name = "perfil")
 @Entity(name = "Perfil")
 public class Perfil {
 

@@ -8,7 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Table(name = "cursos")
+@Table(name = "curso")
 @Entity(name = "Curso")
 @Getter
 @NoArgsConstructor
@@ -26,4 +26,7 @@ public class Curso {
     @NotNull
     private String categoria;
 
+    public Curso(Long id) {
+        this.id = id;
+    }
 }

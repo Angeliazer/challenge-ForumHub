@@ -4,19 +4,20 @@ import com.forumhub.domain.curso.Curso;
 import com.forumhub.domain.resposta.Resposta;
 import com.forumhub.domain.usuario.Usuario;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-@Table(name = "topicos")
+@Table(name = "topico")
 @Entity(name = "Topico")
-@Getter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @EqualsAndHashCode(of = "id")
 public class Topico {
 
@@ -27,23 +28,25 @@ public class Topico {
     @NotNull
     private String titulo;
 
+    @NotBlank
     private String mensagem;
 
-    private LocalDateTime dataCriacao;
+    @NotNull
+    private LocalDateTime dataCriacao = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    @NotNull
+    private Status status=Status.NAO_RESPONDIDO;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id")
+    @ManyToOne
+    @NotNull
     private Usuario autor;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "curso_id")
+    @ManyToOne
+    @NotNull
     private Curso curso;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resposta_id")
-    private Resposta resposta;
+    @OneToMany(mappedBy = "topico", cascade = CascadeType.ALL)
+    private List<Resposta> respostas = new ArrayList<>();
 
 }

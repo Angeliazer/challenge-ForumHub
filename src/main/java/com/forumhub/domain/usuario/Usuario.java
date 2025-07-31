@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity(name = "Usuario")
-@Table(name = "usuarios")
+@Table(name = "usuario")
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -35,8 +35,12 @@ public class Usuario {
 
     public Usuario(DadosCadastroUsuario dados) {
         this.nome = dados.nome();
-        this.email = dados.email().toString();
+        this.email = dados.email();
         this.senha = dados.senha();
-        this.perfil = new Perfil(dados.perfil());
+        this.perfil = new Perfil(dados.idPerfil());
+    }
+
+    public Usuario(Long id){
+        this.id = id;
     }
 }
