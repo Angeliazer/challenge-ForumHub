@@ -36,15 +36,15 @@ public class TopicoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrarTopico(@RequestBody @Valid DtoTopicoRequest dto, UriComponentsBuilder uriComponentsBuilder){
+    public ResponseEntity cadastrarTopico(@RequestBody @Valid DtoTopicoRequest dtoTopicoRequest, UriComponentsBuilder uriComponentsBuilder){
 
-        Curso curso = validacoesCurso.validarCurso(dto.idCurso());
+        Curso curso = validacoesCurso.validarCurso(dtoTopicoRequest.idCurso());
 
-        Usuario autor = validacoesAutor.validarAutor(dto.idAutor());
+        Usuario autor = validacoesAutor.validarAutor(dtoTopicoRequest.idAutor());
 
         var topico = new Topico();
-        topico.setTitulo(dto.titulo());
-        topico.setMensagem(dto.mensagem());
+        topico.setTitulo(dtoTopicoRequest.titulo());
+        topico.setMensagem(dtoTopicoRequest.mensagem());
         topico.setCurso(curso);
         topico.setAutor(autor);
 
