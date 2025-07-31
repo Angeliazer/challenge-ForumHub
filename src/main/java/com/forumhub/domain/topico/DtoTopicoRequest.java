@@ -17,6 +17,4 @@ public record DtoTopicoRequest(
         Long idAutor)
 {
 
-    public DtoTopicoRequest {
-    }
 }

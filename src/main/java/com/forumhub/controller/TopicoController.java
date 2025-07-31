@@ -8,17 +8,12 @@ import com.forumhub.domain.usuario.ValidacoesAutor;
 import com.forumhub.validacoes.ValidacaoException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/topicos")
@@ -54,7 +49,7 @@ public class TopicoController {
         topico.setAutor(autor);
 
         validacoesTopico.validarTituloTopicoEMensagem(topico.getMensagem(), topico.getTitulo());
-;
+
         topicoRepository.save(topico);
         var uri = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
         return ResponseEntity.created(uri).body(new DtoTopicoResponse(topico.getId(), topico.getTitulo(),
@@ -77,19 +72,19 @@ public class TopicoController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DtoAtualizacaoTopico DtoAtualizacaoTopico) {
+    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DtoAtualizacaoTopico dtoAtualizacaoTopico) {
 
         //Validação do tópico
         var topico = validacoesTopico.validarIdTopico(id);
 
-        validacoesTopico.validarTituloTopicoEMensagem(DtoAtualizacaoTopico.mensagem(), DtoAtualizacaoTopico.titulo());
+        validacoesTopico.validarTituloTopicoEMensagem(dtoAtualizacaoTopico.mensagem(), dtoAtualizacaoTopico.titulo());
 
-        if (DtoAtualizacaoTopico.titulo() != null && !DtoAtualizacaoTopico.titulo().isBlank()) {
-            topico.setTitulo(DtoAtualizacaoTopico.titulo());
+        if (dtoAtualizacaoTopico.titulo() != null && !dtoAtualizacaoTopico.titulo().isBlank()) {
+            topico.setTitulo(dtoAtualizacaoTopico.titulo());
         }
 
-        if (DtoAtualizacaoTopico.mensagem() != null && !DtoAtualizacaoTopico.mensagem().isBlank()) {
-            topico.setMensagem(DtoAtualizacaoTopico.mensagem());
+        if (dtoAtualizacaoTopico.mensagem() != null && !dtoAtualizacaoTopico.mensagem().isBlank()) {
+            topico.setMensagem(dtoAtualizacaoTopico.mensagem());
         }
 
         return ResponseEntity.ok(new DtoDetalheTopico(topico.getId(),

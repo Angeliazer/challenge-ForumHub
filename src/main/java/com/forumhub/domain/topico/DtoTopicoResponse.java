@@ -8,6 +8,4 @@ public record DtoTopicoResponse(
         String mensagem,
         LocalDateTime dataCriacao) {
 
-    public DtoTopicoResponse {
-    }
 }
