@@ -1,4 +1,6 @@
-# 📚 API de Gestão (Spring Boot)
+<center>
+  # 📚 API de Gestão Fórum (Spring Boot)
+</center>
 
 Parte de uma API REST desenvolvida com Spring Boot para gerenciar um Fórum com autenticação baseada em JWT.
 
