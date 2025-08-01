@@ -1,6 +1,8 @@
-<center>
+<h1>
+<div align="center">
   # 📚 API de Gestão Fórum (Spring Boot)
-</center>
+</div>
+</h1>
 
 Parte de uma API REST desenvolvida com Spring Boot para gerenciar um Fórum com autenticação baseada em JWT.
 
@@ -32,4 +34,3 @@ Parte de uma API REST desenvolvida com Spring Boot para gerenciar um Fórum com 
 
 ```bash
 git clone https://github.com/Angeliazer/challenge-ForumHub.git
-cd nome-do-projeto
