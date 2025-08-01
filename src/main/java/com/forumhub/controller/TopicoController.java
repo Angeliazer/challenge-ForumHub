@@ -44,13 +44,13 @@ public class TopicoController {
 
         Usuario autor = validacoesAutor.validarAutor(dtoTopicoRequest.idAutor());
 
+        validacoesTopico.validarTituloTopicoEMensagem(dtoTopicoRequest.mensagem(), dtoTopicoRequest.titulo());
+
         var topico = new Topico();
         topico.setTitulo(dtoTopicoRequest.titulo());
         topico.setMensagem(dtoTopicoRequest.mensagem());
         topico.setCurso(curso);
         topico.setAutor(autor);
-
-        validacoesTopico.validarTituloTopicoEMensagem(topico.getMensagem(), topico.getTitulo());
 
         topicoRepository.save(topico);
         var uri = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();

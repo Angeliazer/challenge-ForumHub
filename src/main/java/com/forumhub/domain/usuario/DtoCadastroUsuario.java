@@ -4,8 +4,9 @@ import jakarta.persistence.Column;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-public record DadosCadastroUsuario(
+public record DtoCadastroUsuario(
         @NotNull
         String nome,
 
@@ -21,7 +22,7 @@ public record DadosCadastroUsuario(
         Long idPerfil
 ) {
 
-    public DadosCadastroUsuario(@Valid String nome, String email, String senha, Long idPerfil) {
+    public DtoCadastroUsuario(@Valid String nome, String email, String senha, Long idPerfil) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;

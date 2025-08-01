@@ -3,10 +3,7 @@ package com.forumhub.domain.usuario;
 import com.forumhub.domain.perfil.Perfil;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Getter
+@Setter
 @Entity(name = "Usuario")
 @Table(name = "usuario")
 @AllArgsConstructor
@@ -39,10 +37,10 @@ public class Usuario implements UserDetails {
     @JoinColumn(name = "perfil_id")
     private Perfil perfil;
 
-    public Usuario(DadosCadastroUsuario dados) {
+    public Usuario(DtoCadastroUsuario dados, String senhaCripto) {
         this.nome = dados.nome();
         this.email = dados.email();
-        this.senha = dados.senha();
+        this.senha = senhaCripto;
         this.perfil = new Perfil(dados.idPerfil());
     }
 
@@ -52,7 +50,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+this.perfil.getNome().toUpperCase()));
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override
