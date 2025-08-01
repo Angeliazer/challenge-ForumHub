@@ -21,7 +21,6 @@ Parte de uma API REST desenvolvida com Spring Boot para gerenciar um Fórum com 
 - Flyway (opcional)
 - Auth0 ou JWT Token (autenticação)
 - Maven
-<h1 align="center">ForumHub API</h1>
 
 ---
 
