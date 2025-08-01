@@ -39,7 +39,7 @@ public class Usuario implements UserDetails {
     @JoinColumn(name = "perfil_id")
     private Perfil perfil;
 
-    public Usuario(DadosCadastroUsuario dados) {
+    public Usuario(DtoCadastroUsuario dados) {
         this.nome = dados.nome();
         this.email = dados.email();
         this.senha = dados.senha();
@@ -52,7 +52,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_"+this.perfil.getNome().toUpperCase()));
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
 
     @Override

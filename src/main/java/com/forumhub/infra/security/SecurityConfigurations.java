@@ -27,7 +27,6 @@ public class SecurityConfigurations {
         return httpSecurity.csrf(csrf -> csrf.disable())
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> { req.requestMatchers(HttpMethod.POST, "/login").permitAll();
-                req.requestMatchers(HttpMethod.DELETE, "/topicos").hasRole("ROLE_ADMIN");
                     req.anyRequest().authenticated();
                 })
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

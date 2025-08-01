@@ -2,8 +2,8 @@ package com.forumhub.controller;
 
 
 import com.forumhub.domain.perfil.PerfilRepository;
-import com.forumhub.domain.usuario.DadosCadastroUsuario;
-import com.forumhub.domain.usuario.DadosDetalhamentoUsuario;
+import com.forumhub.domain.usuario.DtoCadastroUsuario;
+import com.forumhub.domain.usuario.DtoDetalheUsuario;
 import com.forumhub.domain.usuario.Usuario;
 import com.forumhub.domain.usuario.UsuarioRepository;
 import com.forumhub.validacoes.ValidacaoException;
@@ -29,7 +29,7 @@ public class UsuarioController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrarUsuario(@RequestBody @Valid DadosCadastroUsuario dados, UriComponentsBuilder uriBuilder){
+    public ResponseEntity cadastrarUsuario(@RequestBody @Valid DtoCadastroUsuario dados, UriComponentsBuilder uriBuilder){
 
         //Validação do perfil
         if (!perfilRepository.existsById(dados.idPerfil())) {
@@ -47,7 +47,7 @@ public class UsuarioController {
 
         var uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(new DadosDetalhamentoUsuario(usuario));
+        return ResponseEntity.created(uri).body(new DtoDetalheUsuario(usuario));
     }
 
 }
