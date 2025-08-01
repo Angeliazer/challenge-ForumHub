@@ -6,6 +6,7 @@ import com.forumhub.domain.topico.*;
 import com.forumhub.domain.usuario.Usuario;
 import com.forumhub.domain.usuario.ValidacoesAutor;
 import com.forumhub.validacoes.ValidacaoException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -19,6 +20,7 @@ import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/topicos")
+@SecurityRequirement(name = "bearer-key")
 public class TopicoController {
 
     private final TopicoRepository topicoRepository;
@@ -66,7 +68,7 @@ public class TopicoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DtoDetalheTopico>> listar(@PageableDefault(size = 10, sort = {"dataCriacao"}) Pageable paginacao) {
+    public ResponseEntity<Page<DtoDetalheTopico>> listar(@PageableDefault(size = 10, sort = "dataCriacao") Pageable paginacao) {
         var page = topicoRepository.findAllByOrderByDataCriacaoAsc(paginacao)
                 .map(topico -> new DtoDetalheTopico(
                         topico.getId(),

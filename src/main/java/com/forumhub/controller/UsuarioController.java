@@ -7,6 +7,7 @@ import com.forumhub.domain.usuario.DtoDetalheUsuario;
 import com.forumhub.domain.usuario.Usuario;
 import com.forumhub.domain.usuario.UsuarioRepository;
 import com.forumhub.validacoes.ValidacaoException;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequestMapping("/usuarios")
+@SecurityRequirement(name = "bearer-key")
 public class UsuarioController {
 
     private final UsuarioRepository usuarioRepository;
