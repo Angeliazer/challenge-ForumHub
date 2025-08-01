@@ -1,6 +1,9 @@
 <h1>
 <div align="center">
-  # 📚 API de Gestão Fórum (Spring Boot)
+  # 📚 API de Gestão Fórum (Spring Boot) 
+  <p align="center">
+  <img src="https://img.shields.io/badge/spring--boot-3.0-brightgreen" alt="Spring Boot Badge" />
+</p>
 </div>
 </h1>
 
@@ -18,6 +21,7 @@ Parte de uma API REST desenvolvida com Spring Boot para gerenciar um Fórum com 
 - Flyway (opcional)
 - Auth0 ou JWT Token (autenticação)
 - Maven
+<h1 align="center">ForumHub API</h1>
 
 ---
 
