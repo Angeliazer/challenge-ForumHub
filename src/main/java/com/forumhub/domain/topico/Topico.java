@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,13 +41,21 @@ public class Topico {
 
     @ManyToOne
     @NotNull
+    @JoinColumn(name = "usuario_id")
     private Usuario autor;
 
     @ManyToOne
     @NotNull
+    @JoinColumn(name = "curso_id")
     private Curso curso;
 
     @OneToMany(mappedBy = "topico", cascade = CascadeType.ALL)
     private List<Resposta> respostas = new ArrayList<>();
 
+    public String formataData() {
+
+        var dataCriacao = getDataCriacao().toString().substring(0,16).replace(" ", "T");
+
+        return dataCriacao;
+    }
 }

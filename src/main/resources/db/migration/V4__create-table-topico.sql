@@ -4,9 +4,9 @@ create table topico (
     mensagem TEXT not null,
     data_criacao datetime not null DEFAULT CURRENT_TIMESTAMP,
     status varchar(20) not null DEFAULT 'NAO_RESPONDIDO',
-    autor_id bigint not null,
+    usuario_id bigint not null,
     curso_id bigint not null,
     primary key(id),
-    constraint fk_topico_autor foreign key(autor_id) references usuario(id),
+    constraint fk_topico_autor foreign key(usuario_id) references usuario(id),
     constraint fk_topico_curso foreign key(curso_id) references curso(id)
 );

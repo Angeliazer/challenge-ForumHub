@@ -2,9 +2,11 @@ package com.forumhub.controller;
 
 import com.forumhub.domain.curso.Curso;
 import com.forumhub.domain.curso.ValidacoesCurso;
+import com.forumhub.domain.resposta.DtoResposta;
 import com.forumhub.domain.topico.*;
 import com.forumhub.domain.usuario.Usuario;
 import com.forumhub.domain.usuario.ValidacoesAutor;
+import com.forumhub.service.TopicoService;
 import com.forumhub.validacoes.ValidacaoException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
@@ -16,7 +18,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/topicos")
@@ -26,16 +30,16 @@ public class TopicoController {
     private final TopicoRepository topicoRepository;
     private final ValidacoesCurso validacoesCurso;
     private final ValidacoesAutor validacoesAutor;
-    private final ValidacoesTopico validacoesTopico;
+    private final TopicoService topicoService;
 
     public TopicoController(TopicoRepository topicoRepository,
                             ValidacoesCurso validacoesCurso,
                             ValidacoesAutor validacoesAutor,
-                            ValidacoesTopico validacoesTopico){
+                            TopicoService topicoService){
         this.topicoRepository = topicoRepository;
         this.validacoesCurso = validacoesCurso;
         this.validacoesAutor = validacoesAutor;
-        this.validacoesTopico = validacoesTopico;
+        this.topicoService = topicoService;
     }
 
     @PostMapping
@@ -46,7 +50,7 @@ public class TopicoController {
 
         Usuario autor = validacoesAutor.validarAutor(dtoTopicoRequest.idAutor());
 
-        validacoesTopico.validarTituloTopicoEMensagem(dtoTopicoRequest.mensagem(), dtoTopicoRequest.titulo());
+        topicoService.validarTituloTopicoEMensagem(dtoTopicoRequest.mensagem(), dtoTopicoRequest.titulo());
 
         var topico = new Topico();
         topico.setTitulo(dtoTopicoRequest.titulo());
@@ -61,25 +65,20 @@ public class TopicoController {
                         topico.getId(),
                         topico.getTitulo(),
                         topico.getMensagem(),
-                        topico.getDataCriacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+                        topico.formataData()
                 )
         );
-
     }
 
     @GetMapping
     public ResponseEntity<Page<DtoDetalheTopico>> listar(@PageableDefault(size = 10, sort = "dataCriacao") Pageable paginacao) {
-        var page = topicoRepository.findAllByOrderByDataCriacaoAsc(paginacao)
-                .map(topico -> new DtoDetalheTopico(
-                        topico.getId(),
-                        topico.getTitulo(),
-                        topico.getMensagem(),
-                        topico.getDataCriacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                        topico.getStatus().name(),
-                        topico.getAutor().getNome(),
-                        topico.getCurso().getNome()
-                ));
-        return ResponseEntity.ok(page);
+
+            Page<DtoDetalheTopico> page = topicoService.obterListaTopicos(paginacao);
+
+            if (page.isEmpty()) {
+                return ResponseEntity.noContent().build();
+            }
+            return ResponseEntity.ok(page);
     }
 
     @PutMapping("/{id}")
@@ -87,9 +86,9 @@ public class TopicoController {
     public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DtoAtualizacaoTopico dtoAtualizacaoTopico) {
 
         //Validação do tópico
-        var topico = validacoesTopico.validarIdTopico(id);
+        var topico = topicoService.validarIdTopico(id);
 
-        validacoesTopico.validarTituloTopicoEMensagem(dtoAtualizacaoTopico.mensagem(), dtoAtualizacaoTopico.titulo());
+        topicoService.validarTituloTopicoEMensagem(dtoAtualizacaoTopico.mensagem(), dtoAtualizacaoTopico.titulo());
 
         if (dtoAtualizacaoTopico.titulo() != null && !dtoAtualizacaoTopico.titulo().isBlank()) {
             topico.setTitulo(dtoAtualizacaoTopico.titulo());
@@ -99,13 +98,27 @@ public class TopicoController {
             topico.setMensagem(dtoAtualizacaoTopico.mensagem());
         }
 
-        return ResponseEntity.ok(new DtoDetalheTopico(topico.getId(),
+        List<DtoResposta> respostas = topico.getRespostas().stream()
+                .map(resposta -> new DtoResposta(
+                        resposta.getId(),
+                        resposta.getMensagem(),
+                        resposta.getDataCriacao().toString(),
+                        resposta.getAutor().getNome(),
+                        resposta.getSolucao()
+                ))
+                .collect(Collectors.toList());
+
+        var dtoDetalheTopico = new DtoDetalheTopico(
+                topico.getId(),
                 topico.getTitulo(),
                 topico.getMensagem(),
-                topico.getDataCriacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                topico.getDataCriacao().toString(),
                 topico.getStatus().name(),
                 topico.getAutor().getNome(),
-                topico.getCurso().getNome()));
+                topico.getCurso().getNome(),
+                respostas);
+
+        return ResponseEntity.ok(dtoDetalheTopico);
     }
 
     @DeleteMapping("/{id}")
@@ -113,10 +126,10 @@ public class TopicoController {
     public ResponseEntity excluir(@PathVariable Long id) {
 
         //Validação se id to tópico existe
-        var topico = validacoesTopico.validarIdTopico(id);
+        var topico = topicoService.validarIdTopico(id);
 
         if (topico == null) {
-            throw  new ValidacaoException("Tópico não existe....!");
+            throw new ValidacaoException("Tópico não existe....!");
         }
 
         topicoRepository.deleteById(id);
@@ -127,16 +140,8 @@ public class TopicoController {
     @GetMapping("/{id}")
     public ResponseEntity detalhar(@PathVariable Long id) {
 
-        var topico = validacoesTopico.validarIdTopico(id);
+        return ResponseEntity.ok(topicoService.obterDetalheTopico(id));
 
-        return ResponseEntity.ok(new DtoDetalheTopico(
-                topico.getId(),
-                topico.getTitulo(),
-                topico.getMensagem(),
-                topico.getDataCriacao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                topico.getStatus().name(),
-                topico.getAutor().getNome(),
-                topico.getCurso().getNome()));
     }
 
 }

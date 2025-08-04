@@ -1,10 +1,13 @@
 package com.forumhub.domain.topico;
 
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.OptionalDouble;
 
 public interface TopicoRepository extends JpaRepository<Topico, Long> {
 
@@ -13,10 +16,17 @@ public interface TopicoRepository extends JpaRepository<Topico, Long> {
             and
             titulo = :titulo)
             """
-    , nativeQuery = true)
+            , nativeQuery = true)
     Integer existeTituloEMensagem(@Param("mensagem") String mensagem, @Param("titulo") String titulo);
 
-    Page<Topico> findAllByOrderByDataCriacaoAsc(Pageable paginacao);
+    @Query(
+            value = """
+                SELECT * FROM topico t
+                JOIN resposta r
+                where t.id = :id and r.topico_id = t.id
+            """, nativeQuery = true
+    )
+    Topico findProcurarPorId(@Param("id") Long id);
     //boolean existsByMensagemAndTitulo(@NotNull String mensagem, @NotNull String titulo);
 
 }

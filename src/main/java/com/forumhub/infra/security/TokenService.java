@@ -29,7 +29,6 @@ public class TokenService {
                     .withExpiresAt(dataExpiracao())
                     .sign(algorithm);
         } catch (JWTCreationException exception){
-            // Invalid Signing configuration / Couldn't convert Claims.
             throw new RuntimeException("Erro ao gerar token jwt ",exception);
         }
     }
