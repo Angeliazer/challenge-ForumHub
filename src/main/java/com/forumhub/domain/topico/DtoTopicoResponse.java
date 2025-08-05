@@ -6,4 +6,8 @@ public record DtoTopicoResponse(
         String mensagem,
         String dataCriacao) {
 
+    public DtoTopicoResponse(Topico topico){
+        this(topico.getId(), topico.getTitulo(), topico.getMensagem(), topico.formataData()
+        );
+    }
 }

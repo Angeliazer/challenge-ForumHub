@@ -1,11 +1,10 @@
 package com.forumhub.controller;
 
 import com.forumhub.domain.curso.Curso;
-import com.forumhub.domain.curso.ValidacoesCurso;
-import com.forumhub.domain.resposta.DtoResposta;
 import com.forumhub.domain.topico.*;
 import com.forumhub.domain.usuario.Usuario;
-import com.forumhub.domain.usuario.ValidacoesAutor;
+import com.forumhub.service.AutorService;
+import com.forumhub.service.CursoService;
 import com.forumhub.service.TopicoService;
 import com.forumhub.validacoes.ValidacaoException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -18,27 +17,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/topicos")
 @SecurityRequirement(name = "bearer-key")
 public class TopicoController {
 
     private final TopicoRepository topicoRepository;
-    private final ValidacoesCurso validacoesCurso;
-    private final ValidacoesAutor validacoesAutor;
+    private final CursoService cursoService;
+    private final AutorService autorService;
     private final TopicoService topicoService;
 
     public TopicoController(TopicoRepository topicoRepository,
-                            ValidacoesCurso validacoesCurso,
-                            ValidacoesAutor validacoesAutor,
+                            CursoService cursoService,
+                            AutorService autorService,
                             TopicoService topicoService){
         this.topicoRepository = topicoRepository;
-        this.validacoesCurso = validacoesCurso;
-        this.validacoesAutor = validacoesAutor;
+        this.cursoService = cursoService;
+        this.autorService = autorService;
         this.topicoService = topicoService;
     }
 
@@ -46,9 +41,9 @@ public class TopicoController {
     @Transactional
     public ResponseEntity cadastrarTopico(@RequestBody @Valid DtoTopicoRequest dtoTopicoRequest, UriComponentsBuilder uriComponentsBuilder){
 
-        Curso curso = validacoesCurso.validarCurso(dtoTopicoRequest.idCurso());
+        Curso curso = cursoService.validarCurso(dtoTopicoRequest.idCurso());
 
-        Usuario autor = validacoesAutor.validarAutor(dtoTopicoRequest.idAutor());
+        Usuario autor = autorService.validarAutor(dtoTopicoRequest.idAutor());
 
         topicoService.validarTituloTopicoEMensagem(dtoTopicoRequest.mensagem(), dtoTopicoRequest.titulo());
 
@@ -60,18 +55,11 @@ public class TopicoController {
 
         topicoRepository.save(topico);
         var uri = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
-        return ResponseEntity.created(uri).body(
-                new DtoTopicoResponse(
-                        topico.getId(),
-                        topico.getTitulo(),
-                        topico.getMensagem(),
-                        topico.formataData()
-                )
-        );
+        return ResponseEntity.created(uri).body(new DtoTopicoResponse(topico));
     }
 
     @GetMapping
-    public ResponseEntity<Page<DtoDetalheTopico>> listar(@PageableDefault(size = 10, sort = "dataCriacao") Pageable paginacao) {
+    public ResponseEntity<Page<DtoDetalheTopico>> listar(@Valid @PageableDefault(size = 10, sort = "dataCriacao") Pageable paginacao) {
 
             Page<DtoDetalheTopico> page = topicoService.obterListaTopicos(paginacao);
 
@@ -83,7 +71,7 @@ public class TopicoController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DtoAtualizacaoTopico dtoAtualizacaoTopico) {
+    public ResponseEntity atualizar(@Valid @PathVariable Long id, @RequestBody DtoAtualizacaoTopico dtoAtualizacaoTopico) {
 
         //Validação do tópico
         var topico = topicoService.validarIdTopico(id);
@@ -103,12 +91,12 @@ public class TopicoController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id) {
+    public ResponseEntity excluir(@Valid @PathVariable Long id) {
 
         //Validação se id to tópico existe
         var topico = topicoService.validarIdTopico(id);
 
-        if (topico == null) {
+        if (topico.getId() == null) {
             throw new ValidacaoException("Tópico não existe....!");
         }
 
@@ -118,7 +106,7 @@ public class TopicoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detalhar(@PathVariable Long id) {
+    public ResponseEntity detalhar(@Valid @PathVariable Long id) {
 
         return ResponseEntity.ok(topicoService.obterDetalheTopico(id));
 

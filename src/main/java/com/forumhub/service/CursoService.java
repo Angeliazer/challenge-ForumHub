@@ -1,23 +1,23 @@
-package com.forumhub.domain.curso;
+package com.forumhub.service;
 
+import com.forumhub.domain.curso.Curso;
+import com.forumhub.domain.curso.CursoRepository;
 import com.forumhub.validacoes.ValidacaoException;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
-
 @Service
-public class ValidacoesCurso {
+public class CursoService {
 
     private final CursoRepository cursoRepository;
-    public ValidacoesCurso(CursoRepository cursoRepository){
+    public CursoService(CursoRepository cursoRepository){
         this.cursoRepository = cursoRepository;
     }
 
     public Curso validarCurso(@Valid Long id) {
 
-        Curso curso = cursoRepository.findById(id)
+        return cursoRepository.findById(id)
                 .orElseThrow(() -> new ValidacaoException("Curso não encontrado...!"));
 
-        return curso;
     }
 }

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.forumhub</groupId>
 	<artifactId>forumalura</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>forumHub</version>
 	<name>forumalura</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
