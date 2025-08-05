@@ -27,19 +27,7 @@ public class TopicoService {
         Optional<Topico> topico = topicoRepository.findById(id);
         if (topico.isPresent()) {
             Topico t = topico.get();
-            List<DtoResposta> respostas = t.getRespostas().stream()
-                    .map(resposta -> new DtoResposta(
-                            resposta.getId(),
-                            resposta.getMensagem(),
-                            resposta.getDataCriacao().toString(),
-                            resposta.getAutor().getNome(),
-                            resposta.getSolucao()
-                    ))
-                    .collect(Collectors.toList());
-
-            return new DtoDetalheTopico(t.getId(), t.getTitulo(), t.getMensagem(), t.getDataCriacao().toString(),
-                    t.getStatus().name(), t.getAutor().getNome(), t.getCurso().getNome(), respostas);
-
+            return new DtoDetalheTopico(t);
         }
         return null;
     }
@@ -48,24 +36,7 @@ public class TopicoService {
 
         Page<Topico> page = topicoRepository.findAll(paginacao);
 
-        return page.map(topico -> new DtoDetalheTopico(
-                topico.getId(),
-                topico.getTitulo(),
-                topico.getMensagem(),
-                topico.getDataCriacao().toString(),
-                topico.getStatus().name(),
-                topico.getAutor().getNome(),
-                topico.getCurso().getNome(),
-                topico.getRespostas().stream()
-                        .map(resposta -> new DtoResposta(
-                                resposta.getId(),
-                                resposta.getMensagem(),
-                                resposta.getDataCriacao().toString(),
-                                resposta.getAutor().getNome(),
-                                resposta.getSolucao()
-                        ))
-                        .toList()
-        ));
+        return page.map(topico -> new DtoDetalheTopico(topico));
     }
 
     public void validarTituloTopicoEMensagem(String mensagem, String titulo) {

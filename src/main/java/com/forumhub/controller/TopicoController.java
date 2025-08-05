@@ -98,27 +98,7 @@ public class TopicoController {
             topico.setMensagem(dtoAtualizacaoTopico.mensagem());
         }
 
-        List<DtoResposta> respostas = topico.getRespostas().stream()
-                .map(resposta -> new DtoResposta(
-                        resposta.getId(),
-                        resposta.getMensagem(),
-                        resposta.getDataCriacao().toString(),
-                        resposta.getAutor().getNome(),
-                        resposta.getSolucao()
-                ))
-                .collect(Collectors.toList());
-
-        var dtoDetalheTopico = new DtoDetalheTopico(
-                topico.getId(),
-                topico.getTitulo(),
-                topico.getMensagem(),
-                topico.getDataCriacao().toString(),
-                topico.getStatus().name(),
-                topico.getAutor().getNome(),
-                topico.getCurso().getNome(),
-                respostas);
-
-        return ResponseEntity.ok(dtoDetalheTopico);
+        return ResponseEntity.ok(new DtoDetalheTopico(topico));
     }
 
     @DeleteMapping("/{id}")
