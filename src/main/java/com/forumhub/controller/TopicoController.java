@@ -71,7 +71,7 @@ public class TopicoController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<DtoDetalheTopico>> listar(@PageableDefault(size = 10, sort = "dataCriacao") Pageable paginacao) {
+    public ResponseEntity<Page<DtoDetalheTopico>> listar(@Valid @PageableDefault(size = 10, sort = "dataCriacao") Pageable paginacao) {
 
             Page<DtoDetalheTopico> page = topicoService.obterListaTopicos(paginacao);
 
@@ -83,7 +83,7 @@ public class TopicoController {
 
     @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity atualizar(@PathVariable Long id, @RequestBody DtoAtualizacaoTopico dtoAtualizacaoTopico) {
+    public ResponseEntity atualizar(@Valid @PathVariable Long id, @RequestBody DtoAtualizacaoTopico dtoAtualizacaoTopico) {
 
         //Validação do tópico
         var topico = topicoService.validarIdTopico(id);
@@ -103,12 +103,12 @@ public class TopicoController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity excluir(@PathVariable Long id) {
+    public ResponseEntity excluir(@Valid @PathVariable Long id) {
 
         //Validação se id to tópico existe
         var topico = topicoService.validarIdTopico(id);
 
-        if (topico == null) {
+        if (topico.getId() == null) {
             throw new ValidacaoException("Tópico não existe....!");
         }
 
@@ -118,7 +118,7 @@ public class TopicoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity detalhar(@PathVariable Long id) {
+    public ResponseEntity detalhar(@Valid @PathVariable Long id) {
 
         return ResponseEntity.ok(topicoService.obterDetalheTopico(id));
 

@@ -1,6 +1,5 @@
 package com.forumhub.service;
 
-import com.forumhub.domain.resposta.DtoResposta;
 import com.forumhub.domain.topico.DtoDetalheTopico;
 import com.forumhub.domain.topico.Topico;
 import com.forumhub.domain.topico.TopicoRepository;
@@ -10,9 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class TopicoService {
@@ -29,7 +26,7 @@ public class TopicoService {
             Topico t = topico.get();
             return new DtoDetalheTopico(t);
         }
-        return null;
+        throw new ValidacaoException("Tópico não existe no banco de dados...!");
     }
 
     public Page<DtoDetalheTopico> obterListaTopicos(Pageable paginacao) {
@@ -48,13 +45,13 @@ public class TopicoService {
         }
     }
 
-    public Topico validarIdTopico(@Valid Long id) {
+    public Topico validarIdTopico(Long id) {
 
         Optional<Topico> topico = topicoRepository.findById(id);
 
         if (topico.isPresent()){
             return topico.get();
         }
-        return new Topico();
+        throw new ValidacaoException("Tópico não existe...!");
     }
 }
