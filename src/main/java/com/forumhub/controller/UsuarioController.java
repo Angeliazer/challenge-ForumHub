@@ -6,6 +6,7 @@ import com.forumhub.domain.usuario.DtoCadastroUsuario;
 import com.forumhub.domain.usuario.DtoDetalheUsuario;
 import com.forumhub.domain.usuario.Usuario;
 import com.forumhub.domain.usuario.UsuarioRepository;
+import com.forumhub.service.UsuarioService;
 import com.forumhub.validacoes.ValidacaoException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.transaction.Transactional;
@@ -23,11 +24,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 @SecurityRequirement(name = "bearer-key")
 public class UsuarioController {
 
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
     private final PerfilRepository perfilRepository;
     private final PasswordEncoder passwordEncoder;
-    public UsuarioController(UsuarioRepository usuarioRepository, PerfilRepository perfilRepository, PasswordEncoder passwordEncoder){
-        this.usuarioRepository = usuarioRepository;
+    public UsuarioController(UsuarioService usuarioService, PerfilRepository perfilRepository, PasswordEncoder passwordEncoder){
+        this.usuarioService = usuarioService;
         this.perfilRepository = perfilRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -42,7 +43,7 @@ public class UsuarioController {
         }
 
         //Validação da existencia de usuário Cadastrado
-        if (usuarioRepository.existsByEmail(dados.email())) {
+        if (usuarioService.existsByEmail(dados.email())) {
             throw new ValidacaoException("Usuário já cadastrado....!");
         }
 
@@ -50,7 +51,7 @@ public class UsuarioController {
 
         var usuario = new Usuario(dados, senhaCripto);
 
-        usuarioRepository.save(usuario);
+        usuarioService.gravarUsuario(usuario);
 
         var uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getId()).toUri();
 
