@@ -17,21 +17,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+
 @RestController
 @RequestMapping("/topicos")
 @SecurityRequirement(name = "bearer-key")
 public class TopicoController {
 
-    private final TopicoRepository topicoRepository;
     private final CursoService cursoService;
     private final AutorService autorService;
     private final TopicoService topicoService;
 
-    public TopicoController(TopicoRepository topicoRepository,
-                            CursoService cursoService,
+    public TopicoController(CursoService cursoService,
                             AutorService autorService,
                             TopicoService topicoService){
-        this.topicoRepository = topicoRepository;
         this.cursoService = cursoService;
         this.autorService = autorService;
         this.topicoService = topicoService;
@@ -53,7 +51,7 @@ public class TopicoController {
         topico.setCurso(curso);
         topico.setAutor(autor);
 
-        topicoRepository.save(topico);
+        topicoService.gravarTopico(topico);
         var uri = uriComponentsBuilder.path("/topicos/{id}").buildAndExpand(topico.getId()).toUri();
         return ResponseEntity.created(uri).body(new DtoTopicoResponse(topico));
     }
@@ -91,6 +89,7 @@ public class TopicoController {
 
     @DeleteMapping("/{id}")
     @Transactional
+    //@PreAuthorize("hasRole('ADMIN')")  //Só usuários logados com perfil ADMIN podem excluir...
     public ResponseEntity excluir(@Valid @PathVariable Long id) {
 
         //Validação se id to tópico existe
@@ -100,13 +99,21 @@ public class TopicoController {
             throw new ValidacaoException("Tópico não existe....!");
         }
 
-        topicoRepository.deleteById(id);
+        topicoService.deletarTopico(id);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity detalhar(@Valid @PathVariable Long id) {
+
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//
+//        UserDetails userDetails = (Usuario) authentication.getPrincipal();
+//        var subject = userDetails.getUsername();
+//        var idUsuario = userDetails.getAuthorities();
+//
+//        System.out.println(idUsuario);
 
         return ResponseEntity.ok(topicoService.obterDetalheTopico(id));
 

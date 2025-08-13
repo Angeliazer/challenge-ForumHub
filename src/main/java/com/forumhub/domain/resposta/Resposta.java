@@ -3,14 +3,12 @@ package com.forumhub.domain.resposta;
 import com.forumhub.domain.topico.Topico;
 import com.forumhub.domain.usuario.Usuario;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(of = "id")
@@ -34,9 +32,5 @@ public class Resposta {
     private LocalDateTime dataCriacao = LocalDateTime.now();
 
     private String solucao;
-
-    public Resposta(Long id){
-        this.id = id;
-    }
 
 }

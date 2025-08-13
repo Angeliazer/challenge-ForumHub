@@ -8,7 +8,6 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Service;
 
 @Configuration
 public class SpringDocConfuiguracao {
@@ -19,7 +18,7 @@ public class SpringDocConfuiguracao {
                         .addSecuritySchemes("bearer-key",
                                 new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")))
                 .info(new Info()
-                        .title("Voll.med API")
+                        .title("ForumHub API")
                         .description("API Rest de parte da criação de uma gestão de fórum...")
                         .contact(new Contact()
                                 .name("Time Backend")

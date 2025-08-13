@@ -4,6 +4,7 @@ import com.forumhub.domain.topico.DtoDetalheTopico;
 import com.forumhub.domain.topico.Topico;
 import com.forumhub.domain.topico.TopicoRepository;
 import com.forumhub.validacoes.ValidacaoException;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,14 @@ public class TopicoService {
         if (topico.isPresent()){
             return topico.get();
         }
-        throw new ValidacaoException("Tópico não existe...!");
+        throw new ValidacaoException("Tópico não encontrado...!");
+    }
+
+    public void gravarTopico(Topico topico) {
+        topicoRepository.save(topico);
+    }
+
+    public void deletarTopico(@Valid Long id) {
+        topicoRepository.deleteById(id);
     }
 }

@@ -17,7 +17,8 @@ public record DtoDetalheTopico(
 
     public DtoDetalheTopico(Topico topico) {
         this(topico.getId(), topico.getTitulo(), topico.getMensagem(), topico.formataData(),
-                topico.getStatus().name(), topico.getAutor().getNome(), topico.getCurso().getNome(), topico.getRespostas().stream()
+                topico.getStatus().name(), topico.getAutor().getNome(), topico.getCurso().getNome(),
+                topico.getRespostas().stream()
                         .map(resposta -> new DtoResposta(
                                 resposta.getId(),
                                 resposta.getMensagem(),
