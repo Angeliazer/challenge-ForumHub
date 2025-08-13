@@ -1,16 +1,12 @@
 package com.forumhub.controller;
 
-import com.forumhub.domain.curso.Curso;
 import com.forumhub.domain.resposta.DtoRespostaRequest;
 import com.forumhub.domain.resposta.Resposta;
-import com.forumhub.domain.resposta.RespostaRepository;
-import com.forumhub.domain.topico.DtoTopicoRequest;
 import com.forumhub.domain.topico.DtoTopicoResponse;
 import com.forumhub.domain.topico.Status;
 import com.forumhub.domain.topico.Topico;
 import com.forumhub.domain.usuario.Usuario;
-import com.forumhub.service.AutorService;
-import com.forumhub.service.CursoService;
+import com.forumhub.service.UsuarioService;
 import com.forumhub.service.RespostaService;
 import com.forumhub.service.TopicoService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -28,12 +24,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 @SecurityRequirement(name = "bearer-key")
 public class RespostaController {
 
-    private final AutorService autorService;
+    private final UsuarioService usuarioService;
     private final TopicoService topicoService;
     private final RespostaService respostaService;
 
-    public RespostaController(AutorService autorService, TopicoService topicoService, RespostaService respostaService){
-        this.autorService = autorService;
+    public RespostaController(UsuarioService usuarioService, TopicoService topicoService, RespostaService respostaService){
+        this.usuarioService = usuarioService;
         this.topicoService = topicoService;
         this.respostaService = respostaService;
     }
@@ -42,7 +38,7 @@ public class RespostaController {
     @Transactional
     public ResponseEntity cadastrarResposta(@RequestBody @Valid DtoRespostaRequest dtoRespostaRequest, UriComponentsBuilder uriComponentsBuilder){
 
-        Usuario autor = autorService.validarAutor(dtoRespostaRequest.usuario_id());
+        Usuario autor = usuarioService.validarAutor(dtoRespostaRequest.usuario_id());
 
         Topico topico = topicoService.validarIdTopico(dtoRespostaRequest.topico_id());
 

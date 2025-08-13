@@ -3,7 +3,7 @@ package com.forumhub.controller;
 import com.forumhub.domain.curso.Curso;
 import com.forumhub.domain.topico.*;
 import com.forumhub.domain.usuario.Usuario;
-import com.forumhub.service.AutorService;
+import com.forumhub.service.UsuarioService;
 import com.forumhub.service.CursoService;
 import com.forumhub.service.TopicoService;
 import com.forumhub.validacoes.ValidacaoException;
@@ -24,11 +24,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class TopicoController {
 
     private final CursoService cursoService;
-    private final AutorService autorService;
+    private final UsuarioService autorService;
     private final TopicoService topicoService;
 
     public TopicoController(CursoService cursoService,
-                            AutorService autorService,
+                            UsuarioService autorService,
                             TopicoService topicoService){
         this.cursoService = cursoService;
         this.autorService = autorService;
